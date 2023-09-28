@@ -10,14 +10,24 @@ import {
   Color3,
   TransformNode,
 } from "@babylonjs/core";
+import { Client, Room } from "colyseus.js";
+import { GameState } from "../../server/src/rooms/schema/GameState";
 
 class Game {
-  player: Player;
-  constructor(startPos: Vector3) {
-    const engine = new Engine(
+  engine!: Engine;
+  scene!: Scene;
+  player!: Player;
+
+  constructor() {
+    this.engine = new Engine(
       document.querySelector("#game") as HTMLCanvasElement
     );
-    const scene = new Scene(engine);
+    window.addEventListener("resize", () => {
+      this.engine.resize();
+    });
+  }
+  async init(startPos: Vector3) {
+    this.scene = new Scene(this.engine);
 
     const camera = new ArcRotateCamera(
       "camera",
@@ -25,7 +35,7 @@ class Game {
       0.8,
       20,
       Vector3.Zero(),
-      scene
+      this.scene
     );
     camera.attachControl();
 
@@ -37,14 +47,14 @@ class Game {
 
     this.player = new Player("player", startPos);
 
-    new HemisphericLight("light", new Vector3(0.2, 1, 0), scene);
+    new HemisphericLight("light", new Vector3(0.2, 1, 0), this.scene);
 
-    window.addEventListener("resize", () => {
-      engine.resize();
-    });
+    await this.scene.whenReadyAsync();
+  }
 
-    engine.runRenderLoop(() => {
-      scene.render();
+  start() {
+    this.engine.runRenderLoop(() => {
+      this.scene.render();
     });
   }
 }
@@ -61,4 +71,36 @@ class Player {
   }
 }
 
-const game = new Game(new Vector3(1, 0, 1));
+class Network {
+  client: Client;
+  room!: Room<GameState>;
+  game = new Game();
+  constructor() {
+    this.client = new Client("ws://localhost:3004");
+    this.join();
+  }
+
+  async join() {
+    this.room = await this.client.joinOrCreate("game");
+    this.room.onMessage("load", async ({ x, y }: { x: number; y: number }) => {
+      await this.game.init(new Vector3(x, 0, y));
+      this.room.send("load-over");
+    });
+    this.room.onMessage("start", async () => {
+      this.game.start();
+    });
+    this.room.onStateChange(this.onStateChange.bind(this));
+  }
+
+  onStateChange(state: GameState) {
+    state.players.forEach((player, id) => {
+      console.log(id);
+      if (id === this.room.sessionId) {
+        console.log("self");
+        return;
+      }
+      console.log(player);
+    });
+  }
+}
+new Network();

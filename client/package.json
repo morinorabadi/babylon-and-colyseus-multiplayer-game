@@ -11,5 +11,9 @@
   "devDependencies": {
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
+  },
+  "dependencies": {
+    "@babylonjs/core": "^6.22.0",
+    "colyseus.js": "^0.15.14"
   }
 }

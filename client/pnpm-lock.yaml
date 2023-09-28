@@ -4,6 +4,14 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+dependencies:
+  '@babylonjs/core':
+    specifier: ^6.22.0
+    version: 6.22.0
+  colyseus.js:
+    specifier: ^0.15.14
+    version: 0.15.14
+
 devDependencies:
   typescript:
     specifier: ^5.0.2
@@ -13,6 +21,15 @@ devDependencies:
     version: 4.4.5
 
 packages:
+
+  /@babylonjs/core@6.22.0:
+    resolution: {integrity: sha512-IcaoymOLtpDjmiMO/LRrH+9UxL/3QIaxL8cBg1kMv47qsTR/gNxzlhxbg0uCWYEGJ4/W2aSkMHMejkLaBaPTyQ==}
+    dev: false
+
+  /@colyseus/schema@2.0.16:
+    resolution: {integrity: sha512-uc917YlOP8tITASNrFnH9GKQq1r2hocnhZp5/wUJvB+P9807TZRkfCVajZlTHJHx+XIGbCbBzQgGrMny6Puhxw==}
+    hasBin: true
+    dev: false
 
   /@esbuild/android-arm64@0.18.20:
     resolution: {integrity: sha512-Nz4rJcchGDtENV0eMKUNa6L12zz2zBDXuhj/Vjh18zGqB44Bi7MBMSXjgunJgjRhCmKOjnPuZp4Mb6OKqtMHLQ==}
@@ -212,6 +229,19 @@ packages:
     dev: true
     optional: true
 
+  /colyseus.js@0.15.14:
+    resolution: {integrity: sha512-hmsGWgaV/odvQ8kmwQQnv32bs/w3h3QGbJ5p11O+wNl4CqRnfzL8GFB8lyC5WSS7ge5wpa9RpIYAH2IE0DCokQ==}
+    engines: {node: '>= 12.x'}
+    dependencies:
+      '@colyseus/schema': 2.0.16
+      httpie: 2.0.0-next.13
+      tslib: 2.6.2
+      ws: 8.14.2
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
+
   /esbuild@0.18.20:
     resolution: {integrity: sha512-ceqxoedUrcayh7Y7ZX6NdbbDzGROiyVBgC4PriJThBKSVPWnnFHZAkfI1lJT8QFkOwH4qOS2SJkS4wvpGl8BpA==}
     engines: {node: '>=12'}
@@ -250,6 +280,11 @@ packages:
     dev: true
     optional: true
 
+  /httpie@2.0.0-next.13:
+    resolution: {integrity: sha512-KbKOnq8wt0hVEfteYCSnEsPgzaWxcVc4qZ4OaDU9mVOYLRo3XChjWs3MiuRgFu5y+4JDo7sDKdKzkAn1ljQYFA==}
+    engines: {node: '>=10'}
+    dev: false
+
   /nanoid@3.3.6:
     resolution: {integrity: sha512-BGcqMMJuToF7i1rt+2PWSNVnWIkGCU78jBG3RxO/bZlnZPK2Cmi2QaffxGO/2RvWi9sL+FAiRiXMgsyxQ1DIDA==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
@@ -281,6 +316,10 @@ packages:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /tslib@2.6.2:
+    resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+    dev: false
 
   /typescript@5.0.2:
     resolution: {integrity: sha512-wVORMBGO/FAs/++blGNeAVdbNKtIh1rbBL2EyQ1+J9lClJ93KiiKe8PmFIVdXhHcyv44SL9oglmfeSsndo0jRw==}
@@ -322,3 +361,16 @@ packages:
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
+
+  /ws@8.14.2:
+    resolution: {integrity: sha512-wEBG1ftX4jcglPxgFCMJmZ2PLtSbJ2Peg6TmpJFTbe9GZYOQCDPdMYu/Tm0/bGZkw8paZnJY45J4K2PZrLYq8g==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+    dev: false

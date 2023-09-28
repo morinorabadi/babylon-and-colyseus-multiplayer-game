@@ -1,7 +1,16 @@
-import { Schema, Context, type } from "@colyseus/schema";
+import { Schema, type, MapSchema } from "@colyseus/schema";
 
-export class MyRoomState extends Schema {
+export class Player extends Schema {
+  @type("number") x: number;
+  @type("number") y: number;
 
-  @type("string") mySynchronizedProperty: string = "Hello world";
+  constructor({ x, y }: { x: number; y: number }) {
+    super();
+    this.x = x;
+    this.y = y;
+  }
+}
 
+export class GameState extends Schema {
+  @type({ map: Player }) players = new MapSchema<Player>();
 }

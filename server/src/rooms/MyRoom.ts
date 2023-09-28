@@ -1,29 +1,33 @@
 import { Room, Client } from "colyseus";
-import { MyRoomState } from "./schema/MyRoomState";
+import { GameState, Player } from "./schema/MyRoomState";
 
-export class MyRoom extends Room<MyRoomState> {
+export class MyRoom extends Room<GameState> {
   maxClients = 4;
 
-  onCreate (options: any) {
-    this.setState(new MyRoomState());
+  onCreate(options: any) {
+    this.setState(new GameState());
 
-    this.onMessage("type", (client, message) => {
-      //
-      // handle "type" message
-      //
+    this.onMessage("update", (client, data) => {
+      const player = this.state.players.get(client.sessionId);
+      player.x = data.x;
+      player.x = data.y;
     });
   }
 
-  onJoin (client: Client, options: any) {
-    console.log(client.sessionId, "joined!");
+  onJoin(client: Client, options: any) {
+    const startPos = {
+      x: Math.round(Math.random() * 10 - 5),
+      y: Math.round(Math.random() * 10 - 5),
+    };
+    this.state.players.set(client.sessionId, new Player(startPos));
+    client.send("start", startPos);
   }
 
-  onLeave (client: Client, consented: boolean) {
+  onLeave(client: Client, consented: boolean) {
     console.log(client.sessionId, "left!");
   }
 
   onDispose() {
     console.log("room", this.roomId, "disposing...");
   }
-
 }

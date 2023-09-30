@@ -27,6 +27,7 @@ export class Game extends Room<GameState> {
     };
     this.state.players.set(client.sessionId, new Player(startPos));
     client.send("load", startPos);
+    this.broadcast("new-player", {  })
   }
 
   onLeave(client: Client, consented: boolean) {

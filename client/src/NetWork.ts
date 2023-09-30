@@ -5,13 +5,22 @@ import { Vector3 } from "@babylonjs/core";
 import { RemotePlayer } from "./Player";
 
 export class Network {
+  private static instance: Network;
   client: Client;
   room!: Room<GameState>;
   remotePlayers: Map<string, RemotePlayer> = new Map();
 
-  constructor() {
+  private constructor() {
     this.client = new Client("ws://localhost:3004");
     this.join();
+    Network.instance = this;
+  }
+
+  static getInstance() {
+    if (!this.instance) {
+      this.instance = new Network();
+    }
+    return this.instance;
   }
 
   async join() {
@@ -63,14 +72,12 @@ export class Network {
   }
 
   onStateChange(state: GameState) {
-    console.log(" new state arrived");
-    // state.players.forEach((player, id) => {
-    //   if (id === this.room.sessionId) {
-    //     console.log("self");
-    //     return;
-    //   }
-    //   console.log(player);
-    // });
+    state.players.forEach((playerState, id) => {
+      if (id === this.room.sessionId) return;
+      console.log(id);
+      const player = this.remotePlayers.get(id)!;
+      player.updatePos(playerState.x, playerState.z);
+    });
   }
 
   createPlayer(id: string, x: number, z: number, color: string) {
@@ -84,5 +91,12 @@ export class Network {
         color,
       })
     );
+  }
+
+  sendNewPos(x: number, z: number) {
+    this.room.send("update-pos", {
+      x,
+      z,
+    });
   }
 }

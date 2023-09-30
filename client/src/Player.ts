@@ -8,6 +8,7 @@ import {
   Color3,
 } from "@babylonjs/core";
 import { Game } from "./Game";
+import { Network } from "./NetWork";
 
 interface IPlayer {
   name: string;
@@ -105,6 +106,11 @@ export class Player extends BasePlayer {
     this.node.position.addInPlace(
       this.speedVec.multiplyByFloats(delta, 0, delta)
     );
+
+    Network.getInstance().sendNewPos(
+      this.node.position.x,
+      this.node.position.z
+    );
   }
 }
 
@@ -112,7 +118,12 @@ export class RemotePlayer extends BasePlayer {
   constructor(data: IPlayer) {
     super(data);
   }
+  
   dispose() {
     this.node.dispose();
+  }
+
+  updatePos(x: number, z: number) {
+    this.node.position.copyFromFloats(x, 0, z);
   }
 }

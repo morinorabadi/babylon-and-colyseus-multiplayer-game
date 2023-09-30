@@ -8,13 +8,9 @@ export class Game extends Room<GameState> {
   onCreate(options: any) {
     this.setState(new GameState());
 
-    // this.onMessage("update", (client, data) => {
-    //   const player = this.state.players.get(client.sessionId);
-    //   player.x = data.x;
-    //   player.x = data.y;
-    // });
-
     this.onMessage("load-over", this.onLoadOver.bind(this));
+
+    this.onMessage("update-pos", this.onUpdatePos.bind(this));
   }
 
   onJoin(client: Client, options: any) {
@@ -30,8 +26,8 @@ export class Game extends Room<GameState> {
 
     const player = new Player(startPos);
     player.color = options.color;
-    console.log(startPos.x,startPos.z);
-    
+    console.log(startPos.x, startPos.z);
+
     this.state.players.set(client.sessionId, player);
     this.broadcast("player-join", {
       id: client.sessionId,
@@ -41,6 +37,12 @@ export class Game extends Room<GameState> {
     });
 
     client.send("start", startPos);
+  }
+
+  onUpdatePos(client: Client, data: any) {
+    const player = this.state.players.get(client.sessionId);
+    player.x = data.x;
+    player.z = data.z;
   }
 
   onLeave(client: Client, consented: boolean) {

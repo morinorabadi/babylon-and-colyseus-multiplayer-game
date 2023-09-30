@@ -34,6 +34,8 @@ export class Game {
     window.addEventListener("resize", () => {
       this.engine.resize();
     });
+    this.engine.displayLoadingUI()
+
     this.scene = new Scene(this.engine);
 
     const camera = new ArcRotateCamera(
@@ -63,5 +65,6 @@ export class Game {
     this.engine.runRenderLoop(() => {
       this.scene.render();
     });
+    this.engine.hideLoadingUI()
   }
 }

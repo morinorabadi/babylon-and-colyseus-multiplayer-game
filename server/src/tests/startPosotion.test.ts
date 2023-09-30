@@ -25,8 +25,8 @@ describe("testing your Colyseus app", () => {
         expect(room.state.players.get(room.clients[0].sessionId).x).toEqual(
           startPos.x
         );
-        expect(room.state.players.get(room.clients[0].sessionId).y).toEqual(
-          startPos.y
+        expect(room.state.players.get(room.clients[0].sessionId).z).toEqual(
+          startPos.z
         );
       });
     });

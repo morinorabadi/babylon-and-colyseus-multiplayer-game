@@ -2,13 +2,13 @@ import { Schema, type, MapSchema } from "@colyseus/schema";
 
 export class Player extends Schema {
   @type("number") x: number;
-  @type("number") y: number;
-  @type("boolean") isOnline: boolean = false
+  @type("number") z: number;
+  @type("string") color: string;
 
-  constructor({ x, y }: { x: number; y: number }) {
+  constructor({ x, z }: { x: number; z: number }) {
     super();
     this.x = x;
-    this.y = y;
+    this.z = z;
   }
 }
 

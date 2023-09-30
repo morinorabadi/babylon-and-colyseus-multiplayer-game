@@ -27,14 +27,14 @@ export class Game {
     return this.instance;
   }
 
-  async init(startPos: Vector3) {
+  async init() {
     this.engine = new Engine(
       document.querySelector("#game") as HTMLCanvasElement
     );
     window.addEventListener("resize", () => {
       this.engine.resize();
     });
-    this.engine.displayLoadingUI()
+    this.engine.displayLoadingUI();
 
     this.scene = new Scene(this.engine);
 
@@ -54,17 +54,21 @@ export class Game {
     mat.diffuseColor = new Color3(0.6, 0.5, 0.5);
     ground.material = mat;
 
-    this.player = new Player("player", startPos);
+    this.player = new Player();
 
     new HemisphericLight("light", new Vector3(0.2, 1, 0), this.scene);
 
     await this.scene.whenReadyAsync();
   }
 
-  start() {
+  start(startPos: Vector3) {
     this.engine.runRenderLoop(() => {
       this.scene.render();
     });
-    this.engine.hideLoadingUI()
+    this.engine.hideLoadingUI();
+    console.log("\n\n ");
+    
+    console.log(startPos);
+    this.player.node.position.copyFrom(startPos);
   }
 }

@@ -3,22 +3,36 @@ import {
   CreateBox,
   TransformNode,
   KeyboardInfo,
+  Mesh,
+  StandardMaterial,
+  Color3,
 } from "@babylonjs/core";
 import { Game } from "./Game";
 
+interface IPlayer {
+  name: string;
+  startPos: Vector3;
+  color: string;
+}
+
 class BasePlayer {
   node: TransformNode;
-
-  constructor(name: string, startPos: Vector3) {
+  mesh: Mesh;
+  constructor({ name, startPos, color }: IPlayer) {
     this.node = new TransformNode(name);
     this.node.position.copyFrom(startPos);
 
-    const mesh = CreateBox("player");
-    mesh.parent = this.node;
+    const mat = new StandardMaterial("mat");
+    mat.diffuseColor = Color3.FromHexString(color);
+
+    this.mesh = CreateBox("player");
+    this.mesh.parent = this.node;
+    this.mesh.material = mat;
   }
 }
 
 export class Player extends BasePlayer {
+  color: string;
   private readonly inputs = {
     forward: false,
     backward: false,
@@ -26,8 +40,11 @@ export class Player extends BasePlayer {
     leftward: false,
   };
   private readonly speedVec = Vector3.Zero();
-  constructor(name: string, startPos: Vector3) {
-    super(name, startPos);
+  constructor() {
+    const color = Color3.Random().toHexString();
+    super({ color, startPos: Vector3.Zero(), name: "player" });
+    this.color = color;
+
     Game.getInstance().scene.onKeyboardObservable.add(
       this.onKeyboardInput.bind(this)
     );
@@ -92,7 +109,10 @@ export class Player extends BasePlayer {
 }
 
 export class RemotePlayer extends BasePlayer {
-  constructor(name: string, startPos: Vector3) {
-    super(name, startPos);
+  constructor(data: IPlayer) {
+    super(data);
+  }
+  dispose() {
+    this.node.dispose();
   }
 }

@@ -14,4 +14,5 @@ export class Player extends Schema {
 
 export class GameState extends Schema {
   @type({ map: Player }) players = new MapSchema<Player>();
+  @type("boolean") isGameStarted: false;
 }

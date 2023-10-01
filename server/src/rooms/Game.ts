@@ -26,16 +26,7 @@ export class Game extends Room<GameState> {
 
     const player = new Player(startPos);
     player.color = options.color;
-    console.log(startPos.x, startPos.z);
-
     this.state.players.set(client.sessionId, player);
-    this.broadcast("player-join", {
-      id: client.sessionId,
-      x: startPos.x,
-      z: startPos.z,
-      color: options.color,
-    });
-
     client.send("start", startPos);
   }
 
@@ -46,7 +37,6 @@ export class Game extends Room<GameState> {
   }
 
   onLeave(client: Client, consented: boolean) {
-    this.broadcast("player-left", { id: client.sessionId });
     this.state.players.delete(client.sessionId);
     console.log(client.sessionId, "left!");
   }

@@ -66,9 +66,6 @@ export class Game {
       this.scene.render();
     });
     this.engine.hideLoadingUI();
-    console.log("\n\n ");
-    
-    console.log(startPos);
     this.player.node.position.copyFrom(startPos);
   }
 }

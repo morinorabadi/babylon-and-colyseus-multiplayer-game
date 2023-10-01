@@ -8,14 +8,16 @@ import { Vector3 } from "@babylonjs/core";
 import Player from "../Players/Player";
 import { LatencyCalculator } from "./LatencyCalculator";
 import { RemotePlayer } from "../Players/RemotePlayersManager";
+import { Clock } from "../utils/Clock";
 
 export default class Network {
   private static instance: Network;
   client: Client;
   room!: Room<GameState>;
   remotePlayers: Map<string, RemotePlayer> = new Map();
+  latency!: number;
   latencyCalculator!: LatencyCalculator;
-
+  clock!: Clock;
   private constructor() {
     this.client = new Client("ws://localhost:3004");
     Network.instance = this;
@@ -31,9 +33,23 @@ export default class Network {
 
   async join() {
     this.room = await this.client.joinOrCreate("game");
+
     this.latencyCalculator = new LatencyCalculator();
-    this.room.state.players.onAdd(this.onAddPlayer.bind(this));
-    this.room.state.players.onRemove(this.onRemovePlayer.bind(this));
+    // todo do some thing for after latency
+
+    this.room.onMessage("start", async (data) => {
+      console.log("start");
+
+      const beforeLatency = Clock.now();
+      this.latency = await this.latencyCalculator.calculate();
+      const latencyTimeTaken = Clock.now() - beforeLatency;
+
+      console.log(latencyTimeTaken, this.latency, data.now);
+      this.clock = new Clock(data.now + latencyTimeTaken + this.latency / 2);
+
+      this.room.state.players.onAdd(this.onAddPlayer.bind(this));
+      this.room.state.players.onRemove(this.onRemovePlayer.bind(this));
+    });
   }
 
   /**
@@ -76,6 +92,7 @@ export default class Network {
     this.room.send("update-pos", {
       x,
       z,
+      t: this.clock.getElapsedTime(),
     });
   }
 }

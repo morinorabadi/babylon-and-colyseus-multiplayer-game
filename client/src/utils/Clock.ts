@@ -3,10 +3,10 @@ export class Clock {
   private oldTime = 0;
   private elapsedTime = 0;
 
-  constructor() {
-    this.startTime = Clock.now();
-    this.oldTime = this.startTime;
-    this.elapsedTime = 0;
+  constructor(startTime: number) {
+    this.startTime = startTime;
+    this.oldTime = Clock.now();
+    this.elapsedTime = this.startTime;
   }
 
   static now() {

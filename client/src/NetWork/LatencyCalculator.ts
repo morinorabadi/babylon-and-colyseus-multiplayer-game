@@ -27,7 +27,6 @@ export class LatencyCalculator {
 
     while (!isOver) {
       await new Promise((r) => setTimeout(r, 100));
-      console.log("wait");
       if (pings.length === this.PING_COUNT) isOver = true;
     }
 
@@ -57,6 +56,7 @@ export class LatencyCalculator {
     const sum = pings.reduce((sum, data) => {
       return sum + data.timeBacks - data.timeSends;
     }, 0);
+    this.results.delete(id);
     return sum / 20;
   }
 }

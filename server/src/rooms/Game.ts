@@ -7,27 +7,18 @@ export class Game extends Room<GameState> {
 
   onCreate(options: any) {
     this.setState(new GameState());
-
-    this.onMessage("load-over", this.onLoadOver.bind(this));
-
     this.onMessage("update-pos", this.onUpdatePos.bind(this));
   }
 
-  onJoin(client: Client, options: any) {
-    client.send("load");
-    console.log(client.sessionId, "join!");
-  }
-
-  onLoadOver(client: Client, options: any) {
-    const startPos = {
+  onJoin(client: Client) {
+    const data = {
       x: Math.round(Math.random() * 10 - 5),
       z: Math.round(Math.random() * 10 - 5),
+      color: "#" + Math.floor(Math.random() * 16777215).toString(16),
     };
-
-    const player = new Player(startPos);
-    player.color = options.color;
+    const player = new Player(data);
     this.state.players.set(client.sessionId, player);
-    client.send("start", startPos);
+    console.log(client.sessionId, "join!");
   }
 
   onUpdatePos(client: Client, data: any) {

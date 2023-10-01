@@ -54,18 +54,15 @@ export class Game {
     mat.diffuseColor = new Color3(0.6, 0.5, 0.5);
     ground.material = mat;
 
-    this.player = new Player();
-
     new HemisphericLight("light", new Vector3(0.2, 1, 0), this.scene);
 
     await this.scene.whenReadyAsync();
   }
 
-  start(startPos: Vector3) {
+  start() {
     this.engine.runRenderLoop(() => {
       this.scene.render();
     });
     this.engine.hideLoadingUI();
-    this.player.node.position.copyFrom(startPos);
   }
 }

@@ -19,21 +19,36 @@ interface IPlayer {
 class BasePlayer {
   node: TransformNode;
   mesh: Mesh;
+  material: StandardMaterial;
   constructor({ name, startPos, color }: IPlayer) {
     this.node = new TransformNode(name);
     this.node.position.copyFrom(startPos);
 
-    const mat = new StandardMaterial("mat");
-    mat.diffuseColor = Color3.FromHexString(color);
+    this.material = new StandardMaterial("mat");
+    this.material.diffuseColor = Color3.FromHexString(color);
 
     this.mesh = CreateBox("player");
     this.mesh.parent = this.node;
-    this.mesh.material = mat;
+    this.mesh.material = this.material;
+  }
+}
+
+export class RemotePlayer extends BasePlayer {
+  constructor(data: IPlayer) {
+    super(data);
+  }
+
+  dispose() {
+    this.node.dispose();
+  }
+
+  updatePos(x: number, z: number) {
+    this.node.position.copyFromFloats(x, 0, z);
   }
 }
 
 export class Player extends BasePlayer {
-  color: string;
+  private static instance: Player;
   private readonly inputs = {
     forward: false,
     backward: false,
@@ -41,10 +56,22 @@ export class Player extends BasePlayer {
     leftward: false,
   };
   private readonly speedVec = Vector3.Zero();
-  constructor() {
-    const color = Color3.Random().toHexString();
-    super({ color, startPos: Vector3.Zero(), name: "player" });
-    this.color = color;
+
+  private constructor() {
+    super({ color: "#fff", startPos: Vector3.Zero(), name: "player" });
+    Player.instance = this;
+  }
+
+  static getInstance() {
+    if (!this.instance) {
+      this.instance = new Player();
+    }
+    return this.instance;
+  }
+
+  init({ startPos, color }: Omit<IPlayer, "name">) {
+    this.node.position.copyFrom(startPos);
+    this.material.diffuseColor = Color3.FromHexString(color);
 
     Game.getInstance().scene.onKeyboardObservable.add(
       this.onKeyboardInput.bind(this)
@@ -111,19 +138,5 @@ export class Player extends BasePlayer {
       this.node.position.x,
       this.node.position.z
     );
-  }
-}
-
-export class RemotePlayer extends BasePlayer {
-  constructor(data: IPlayer) {
-    super(data);
-  }
-  
-  dispose() {
-    this.node.dispose();
-  }
-
-  updatePos(x: number, z: number) {
-    this.node.position.copyFromFloats(x, 0, z);
   }
 }

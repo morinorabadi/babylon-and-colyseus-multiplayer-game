@@ -5,10 +5,11 @@ export class Player extends Schema {
   @type("number") z: number;
   @type("string") color: string;
 
-  constructor({ x, z }: { x: number; z: number }) {
+  constructor({ x, z, color }: { x: number; z: number; color: string }) {
     super();
     this.x = x;
     this.z = z;
+    this.color = color;
   }
 }
 

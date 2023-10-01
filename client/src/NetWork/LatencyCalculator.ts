@@ -1,6 +1,6 @@
 import { Clock } from "../utils/Clock";
-import randomString from "../utils/radnomString";
-import { Network } from "./NetWork";
+import randomString from "../utils/randomString";
+import Network from "../NetWork/NetWork";
 
 interface IPing {
   timeSends: number;

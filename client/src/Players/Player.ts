@@ -1,6 +1,6 @@
 import { Vector3, KeyboardInfo, Color3 } from "@babylonjs/core";
 import { Game } from "../Game";
-import { Network } from "../NetWork";
+import Network from "../NetWork/NetWork";
 import BasePlayer, { IPlayer } from "./BasePlayer";
 
 export default class Player extends BasePlayer {

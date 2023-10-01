@@ -2,14 +2,14 @@ import { Client, Room } from "colyseus.js";
 import {
   GameState,
   PlayerState,
-} from "../../server/src/rooms/schema/GameState";
-import { Game } from "./Game";
+} from "../../../server/src/rooms/schema/GameState";
+import { Game } from "../Game";
 import { Vector3 } from "@babylonjs/core";
-import Player from "./Players/Player";
+import Player from "../Players/Player";
 import { LatencyCalculator } from "./LatencyCalculator";
-import { RemotePlayer } from "./Players/RemotePlayersManager";
+import { RemotePlayer } from "../Players/RemotePlayersManager";
 
-export class Network {
+export default class Network {
   private static instance: Network;
   client: Client;
   room!: Room<GameState>;

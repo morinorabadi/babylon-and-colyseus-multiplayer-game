@@ -1,5 +1,5 @@
-import { Clock } from "./Clock";
-import randomString from "./utils/radnomString";
+import { Clock } from "../utils/Clock";
+import randomString from "../utils/radnomString";
 import { Network } from "./NetWork";
 
 interface IPing {

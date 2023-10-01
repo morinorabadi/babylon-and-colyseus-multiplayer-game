@@ -7,6 +7,7 @@ export class Game extends Room<GameState> {
   onCreate(options: any) {
     this.setState(new GameState());
     this.onMessage("update-pos", this.onUpdatePos.bind(this));
+    this.onMessage("ping", this.pong.bind(this));
   }
 
   onJoin(client: Client) {
@@ -24,6 +25,10 @@ export class Game extends Room<GameState> {
     const player = this.state.players.get(client.sessionId);
     player.x = data.x;
     player.z = data.z;
+  }
+
+  pong(client: Client, data: any) {
+    client.send("pong", data);
   }
 
   onLeave(client: Client, consented: boolean) {

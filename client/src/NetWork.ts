@@ -6,12 +6,14 @@ import {
 import { Game } from "./Game";
 import { Vector3 } from "@babylonjs/core";
 import { Player, RemotePlayer } from "./Player";
+import { LatencyCalculator } from "./LatencyCalculator";
 
 export class Network {
   private static instance: Network;
   client: Client;
   room!: Room<GameState>;
   remotePlayers: Map<string, RemotePlayer> = new Map();
+  latencyCalculator = new LatencyCalculator();
 
   private constructor() {
     this.client = new Client("ws://localhost:3004");

@@ -1,9 +1,8 @@
 import { Room, Client } from "colyseus";
-import { GameState, Player } from "./schema/GameState";
+import { GameState, PlayerState } from "./schema/GameState";
 
 export class Game extends Room<GameState> {
   maxClients = 4;
-  autoDispose = false;
 
   onCreate(options: any) {
     this.setState(new GameState());
@@ -16,7 +15,7 @@ export class Game extends Room<GameState> {
       z: Math.round(Math.random() * 10 - 5),
       color: "#" + Math.floor(Math.random() * 16777215).toString(16),
     };
-    const player = new Player(data);
+    const player = new PlayerState(data);
     this.state.players.set(client.sessionId, player);
     console.log(client.sessionId, "join!");
   }

@@ -1,5 +1,8 @@
 import { Client, Room } from "colyseus.js";
-import { GameState } from "../../server/src/rooms/schema/GameState";
+import {
+  GameState,
+  PlayerState,
+} from "../../server/src/rooms/schema/GameState";
 import { Game } from "./Game";
 import { Vector3 } from "@babylonjs/core";
 import { Player, RemotePlayer } from "./Player";
@@ -25,52 +28,44 @@ export class Network {
 
   async join() {
     this.room = await this.client.joinOrCreate("game");
+    this.room.state.players.onAdd(this.onAddPlayer.bind(this));
+    this.room.state.players.onRemove(this.onRemovePlayer.bind(this));
+  }
 
-    /**
-     * start
-     */
-    // ! fix this
-    this.room.state.listen("isGameStarted", (isGameStarted) => {
-      if (isGameStarted) Game.getInstance().start();
-      else console.log(" do some thin for game over");
-    });
+  /**
+   * player-join
+   */
+  onAddPlayer(playerData: PlayerState, id: string) {
+    if (id === this.room.sessionId) {
+      // self
+      const player = Player.getInstance();
+      player.init({
+        startPos: new Vector3(playerData.x, 0, playerData.z),
+        color: playerData.color,
+      });
+      Game.getInstance().start();
+    } else {
+      // remote
+      const player = new RemotePlayer({
+        name: id,
+        startPos: new Vector3(playerData.x, 0, playerData.z),
+        color: playerData.color,
+      });
+      this.remotePlayers.set(id, player);
+      playerData.onChange(() => {
+        player.updatePos(playerData.x, playerData.z);
+      });
+    }
+  }
 
-    /**
-     * player-join
-     */
-    this.room.state.players.onAdd((playerData, id) => {
-      if (id === this.room.sessionId) {
-        // self
-        const player = Player.getInstance();
-        player.init({
-          startPos: new Vector3(playerData.x, 0, playerData.z),
-          color: playerData.color,
-        });
-        // ! remove this
-        Game.getInstance().start();
-      } else {
-        // remote
-        const player = new RemotePlayer({
-          name: id,
-          startPos: new Vector3(playerData.x, 0, playerData.z),
-          color: playerData.color,
-        });
-        this.remotePlayers.set(id, player);
-        playerData.onChange(() => {
-          player.updatePos(playerData.x, playerData.z);
-        });
-      }
-    });
-
-    /**
-     * player-left
-     */
-    this.room.state.players.onRemove((_player, id) => {
-      if (id === this.room.sessionId) return;
-      const remotePlayer = this.remotePlayers.get(id)!;
-      remotePlayer.dispose();
-      this.remotePlayers.delete(id);
-    });
+  /**
+   * player-left
+   */
+  onRemovePlayer(_playerData: PlayerState, id: string) {
+    if (id === this.room.sessionId) return;
+    const remotePlayer = this.remotePlayers.get(id)!;
+    remotePlayer.dispose();
+    this.remotePlayers.delete(id);
   }
 
   sendNewPos(x: number, z: number) {

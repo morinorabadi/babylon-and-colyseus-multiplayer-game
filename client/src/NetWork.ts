@@ -13,12 +13,12 @@ export class Network {
   client: Client;
   room!: Room<GameState>;
   remotePlayers: Map<string, RemotePlayer> = new Map();
-  latencyCalculator = new LatencyCalculator();
+  latencyCalculator!: LatencyCalculator;
 
   private constructor() {
     this.client = new Client("ws://localhost:3004");
-    this.join();
     Network.instance = this;
+    this.join();
   }
 
   static getInstance() {
@@ -30,6 +30,7 @@ export class Network {
 
   async join() {
     this.room = await this.client.joinOrCreate("game");
+    this.latencyCalculator = new LatencyCalculator();
     this.room.state.players.onAdd(this.onAddPlayer.bind(this));
     this.room.state.players.onRemove(this.onRemovePlayer.bind(this));
   }

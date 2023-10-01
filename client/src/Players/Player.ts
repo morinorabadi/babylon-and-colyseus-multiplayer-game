@@ -1,53 +1,9 @@
-import {
-  Vector3,
-  CreateBox,
-  TransformNode,
-  KeyboardInfo,
-  Mesh,
-  StandardMaterial,
-  Color3,
-} from "@babylonjs/core";
-import { Game } from "./Game";
-import { Network } from "./NetWork";
+import { Vector3, KeyboardInfo, Color3 } from "@babylonjs/core";
+import { Game } from "../Game";
+import { Network } from "../NetWork";
+import BasePlayer, { IPlayer } from "./BasePlayer";
 
-interface IPlayer {
-  name: string;
-  startPos: Vector3;
-  color: string;
-}
-
-class BasePlayer {
-  node: TransformNode;
-  mesh: Mesh;
-  material: StandardMaterial;
-  constructor({ name, startPos, color }: IPlayer) {
-    this.node = new TransformNode(name);
-    this.node.position.copyFrom(startPos);
-
-    this.material = new StandardMaterial("mat");
-    this.material.diffuseColor = Color3.FromHexString(color);
-
-    this.mesh = CreateBox("player");
-    this.mesh.parent = this.node;
-    this.mesh.material = this.material;
-  }
-}
-
-export class RemotePlayer extends BasePlayer {
-  constructor(data: IPlayer) {
-    super(data);
-  }
-
-  dispose() {
-    this.node.dispose();
-  }
-
-  updatePos(x: number, z: number) {
-    this.node.position.copyFromFloats(x, 0, z);
-  }
-}
-
-export class Player extends BasePlayer {
+export default class Player extends BasePlayer {
   private static instance: Player;
   private readonly inputs = {
     forward: false,

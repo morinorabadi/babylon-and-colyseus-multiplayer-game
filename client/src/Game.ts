@@ -8,7 +8,7 @@ import {
   StandardMaterial,
   Color3,
 } from "@babylonjs/core";
-import { Player } from "./Player";
+import { Player } from "./Players/Player";
 
 export class Game {
   private static instance: Game;

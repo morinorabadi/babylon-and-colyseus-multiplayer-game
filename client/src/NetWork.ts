@@ -5,8 +5,9 @@ import {
 } from "../../server/src/rooms/schema/GameState";
 import { Game } from "./Game";
 import { Vector3 } from "@babylonjs/core";
-import { Player, RemotePlayer } from "./Player";
+import Player from "./Players/Player";
 import { LatencyCalculator } from "./LatencyCalculator";
+import { RemotePlayer } from "./Players/RemotePlayersManager";
 
 export class Network {
   private static instance: Network;
